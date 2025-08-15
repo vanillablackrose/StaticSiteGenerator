@@ -1,5 +1,3 @@
-
-
 class HTMLNode():
 
     def __init__(self, tag=None, value=None, children:list=None, props:dict=None):
@@ -59,3 +57,36 @@ class LeafNode(HTMLNode):
             node_string += f"</{self.tag}>"
 
             return node_string
+        
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children, props = None):
+        super().__init__(tag, None, children, props)
+
+
+    def to_html(self):
+        if self.tag == None:
+            raise ValueError("Error: The Parent node does not have a tag and this is required")
+        
+        if self.children == None:
+            raise ValueError("Error: The Parent node does not have children and this is required")
+        
+        node_string = f"<{self.tag}"        
+        node_string += self.props_to_html() + ">"
+        for child in self.children:
+            node_string += child.to_html()
+
+        node_string += f"</{self.tag}>"
+
+        return node_string
+    
+    def add_children(self, children):
+        self.children = children
+
+    def add_child(self, child):
+        if self.children == None:
+            self.children = [child]
+        else:
+            self.children.extend(child)
+    
+    
+            
