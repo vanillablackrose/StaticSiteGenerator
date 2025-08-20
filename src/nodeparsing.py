@@ -133,7 +133,7 @@ def split_text_tuples(text, parent_type:TextType, matches, tuple_type:TextType):
             new_nodes.append(TextNode(curr_text, parent_type))
 
         # create the image/link
-        new_nodes.append(TextNode(match_text, parent_type, url))
+        new_nodes.append(TextNode(match_text, tuple_type, url))
 
     #handle the remainder
     if remainder != "":

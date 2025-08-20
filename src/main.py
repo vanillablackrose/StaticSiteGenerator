@@ -1,11 +1,18 @@
-from textnode import TextNode
-from textnode import TextType
+from generatehtmlfile import copy_static, generate_pages_recursive
+WORKING_DIR = "."
+
 
 def main():
+    copy_static(WORKING_DIR) 
 
-    node = TextNode("This is some sample text", TextType.LINK, "http://www.google.com")
+    from_path = WORKING_DIR + "/content"
+    template_path = "template.html"
+    dest_path = WORKING_DIR + "/public"
 
-    print(node)    
+    generate_pages_recursive(from_path, template_path, dest_path)
+
+
+
 
 
 main()
