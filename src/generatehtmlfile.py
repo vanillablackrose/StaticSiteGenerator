@@ -126,13 +126,10 @@ def write_content(template, content):
     return template.replace("{{ Content }}", content)
 
 def write_basepath(template, basepath):
-    find_str_href = "href=""" + "/" 
-    replace_str_href = "href=""" + basepath
-    template = template.replace(find_str_href, replace_str_href)
-    
-    find_str_src = "src=""" + "/" 
-    replace_str_src = "src=""" + basepath
-    template = template.replace(find_str_src, replace_str_src)
+    template = template.replace('href="/', 'href="' + basepath)
+    template = template.replace("href='/", "href='" + basepath)
+    template = template.replace('src="/' , 'src="' + basepath )
+    template = template.replace("src='/", "src='" + basepath)
     return template
 
 def write_file(file_path, content):
