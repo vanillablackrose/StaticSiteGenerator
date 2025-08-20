@@ -5,7 +5,7 @@ from markdowntohtml import markdown_to_html_node
 
 
 def copy_static(working_dir):
-    public_dir = working_dir + "/public"
+    public_dir = working_dir + "/docs"
     static_dir = working_dir + "/static"
     
     clear_target_dir(public_dir)
@@ -69,7 +69,7 @@ def extract_title(markdown):
     # reached end of markdown without finding a title
     raise ValueError("Error: The markdown file does not contain a h1 heading block for a title and this is required for rendering.")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     #read the markdown
@@ -82,10 +82,11 @@ def generate_page(from_path, template_path, dest_path):
 
     content = write_title(template, title)
     content = write_content(content, html_content)
+    content = write_basepath(content, basepath)
 
     write_file(dest_path, content)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
 
     dir_path_prefix = path_prefix(dir_path_content)
     dest_path_prefix = path_prefix(dest_dir_path)
@@ -97,12 +98,12 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         if os.path.isfile(abs_path):
             file_path = create_target_dir_path(abs_path, dir_path_prefix, dest_path_prefix)
             file_path = file_path.replace(".md", ".html")
-            generate_page(abs_path, template_path, file_path)
+            generate_page(abs_path, template_path, file_path, basepath)
         else:
             #create the directory in the destination directory
             new_dir_path = create_target_dir_path(abs_path, dir_path_prefix, dest_path_prefix)
             os.mkdir(new_dir_path)
-            generate_pages_recursive(abs_path, template_path, new_dir_path)
+            generate_pages_recursive(abs_path, template_path, new_dir_path, basepath)
                
 
 def read_file(path_to_file):
@@ -123,6 +124,16 @@ def write_title(template, title):
 
 def write_content(template, content):
     return template.replace("{{ Content }}", content)
+
+def write_basepath(template, basepath):
+    find_str_href = "href=""" + "/" 
+    replace_str_href = "href=""" + basepath
+    template = template.replace(find_str_href, replace_str_href)
+    
+    find_str_src = "src=""" + "/" 
+    replace_str_src = "src=""" + basepath
+    template = template.replace(find_str_src, replace_str_src)
+    return template
 
 def write_file(file_path, content):
     try:
